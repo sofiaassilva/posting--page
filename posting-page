@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Post com API</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui;
+      margin: 0;
+      padding: 20px;
+      background: #f3f3f3;
+    }
+
+    main {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    input, textarea, button {
+      padding: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #005fcc;
+    }
+
+    article {
+      margin-top: 30px;
+      padding: 20px;
+      background: #fafafa;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Criar Post</h1>
+
+    <form id="form-post">
+      <input id="titulo" type="text" placeholder="Digite o título" required>
+      <textarea id="conteudo" rows="5" placeholder="Digite o conteúdo" required></textarea>
+      <button type="submit">Enviar Post</button>
+    </form>
+
+    <article>
+      <h2 id="renderizador-titulo">Título aparecerá aqui...</h2>
+      <p id="renderizador-conteudo">Conteúdo aparecerá aqui...</p>
+    </article>
+  </main>
+
+  <script>
+    // Seletores principais
+    const form = document.querySelector('#form-post');
+    const titulo = document.querySelector('#titulo');
+    const conteudo = document.querySelector('#conteudo');
+
+    const renderTitulo = document.querySelector('#renderizador-titulo');
+    const renderConteudo = document.querySelector('#renderizador-conteudo');
+
+    // Evento de envio do formulário (submit)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = {
+        title: titulo.value,
+        body: conteudo.value,
+        userId: 1
+      };
+
+      fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        // Renderização do retorno da API
+        renderTitulo.innerHTML = data.title;
+        renderConteudo.innerHTML = data.body;
+
+        // Limpar inputs (opcional)
+        titulo.value = "";
+        conteudo.value = "";
+      })
+      .catch(err => {
+        alert("Erro ao enviar o post: " + err);
+      });
+    });
+  </script>
+</body>
+</html>
+
